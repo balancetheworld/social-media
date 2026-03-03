@@ -1,0 +1,13 @@
+# Common ignores
+node_modules/
+.next/
+.env*.local
+.DS_Store
+
+# Database & uploads
+data/
+uploads/
+
+# Claude Code spec workflow
+.spec-workflow/
+
