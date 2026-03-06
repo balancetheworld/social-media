@@ -29,7 +29,11 @@
     "logout": "Logout",
     "post": "Post",
     "backToTop": "Back to top",
-    "settings": "Settings"
+    "settings": "Settings",
+    "confirmLogout": "Confirm Logout",
+    "logoutConfirmMessage": "Are you sure you want to logout?",
+    "notLoggedIn": "Not logged in",
+    "clickToLogin": "Click to login"
   },
   "auth": {
     "welcomeBack": "Welcome back",

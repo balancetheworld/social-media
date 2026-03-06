@@ -8,12 +8,14 @@ import { FollowButton } from "@/components/ui/follow-button"
 import { useSocial } from "@/lib/social-context"
 import { useSearch } from "@/lib/search-context"
 import { formatCount } from "@/lib/format"
+import { useState } from "react"
 
 export function RightPanel() {
   const { users, posts, currentUserId } = useSocial()
   const { query, setQuery, isSearching, postResults } = useSearch()
+  const [localQuery, setLocalQuery] = useState(query)
 
-  const trimmed = query.trim().toLowerCase()
+  const trimmed = localQuery.trim().toLowerCase()
 
   const userResults = useMemo(() => {
     if (!trimmed) return []
@@ -55,132 +57,177 @@ export function RightPanel() {
   }, [posts])
 
   const hasResults = userResults.length > 0 || tagResults.length > 0 || postResults.length > 0
-  const suggestedUsers = users.filter((u) => u.id !== currentUserId).slice(0, 3)
+  const suggestedUsers = users.filter((u) => u.id !== currentUserId).slice(0, 5)
+
+  const handleSearch = (value: string) => {
+    setLocalQuery(value)
+    setQuery(value)
+  }
 
   return (
-    <aside className="sticky top-20 hidden h-fit w-[260px] shrink-0 flex-col gap-3 lg:flex">
-      {/* Search */}
-      <div className="relative">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="搜索用户、帖子、标签..."
-          className="h-9 w-full rounded-xl bg-secondary/50 px-4 pl-9 text-sm outline-none placeholder:text-muted-foreground focus:bg-card focus:ring-2 focus:ring-primary/20 transition-all border border-transparent focus:border-primary/20"
-        />
-        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-        {trimmed && (
-          <button onClick={() => setQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
-      </div>
-
-      {/* Search results -- users and tags only (posts show in main area) */}
-      {isSearching && (
-        <div className="glass-card overflow-hidden">
-          {!hasResults && (
-            <p className="px-4 py-5 text-center text-sm text-muted-foreground">未找到相关结果</p>
+    <aside className="hidden lg:block w-[350px] shrink-0 py-4">
+      <div className="sticky top-0 flex flex-col gap-4">
+        {/* Search */}
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+            <Search className="h-5 w-5" />
+          </div>
+          <input
+            type="text"
+            value={localQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            placeholder="搜索"
+            className="glass-input h-12 w-full rounded-full px-14 pl-14 text-base outline-none placeholder:text-muted-foreground transition-all"
+          />
+          {trimmed && (
+            <button
+              onClick={() => handleSearch("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
           )}
+        </div>
 
-          {/* Post count hint */}
-          {postResults.length > 0 && (
-            <div className="px-4 py-2.5 text-xs text-muted-foreground border-b border-border/20">
-              找到 <span className="font-semibold text-primary">{postResults.length}</span> 篇相关帖子，已在右侧展示
-            </div>
-          )}
+        {/* Search results dropdown */}
+        {(trimmed || isSearching) && (
+          <div className="glass-card overflow-hidden">
+            {!hasResults && (
+              <p className="px-4 py-8 text-center text-base text-muted-foreground">未找到相关结果</p>
+            )}
 
-          {/* Tag results */}
-          {tagResults.length > 0 && (
-            <div>
-              <div className="flex items-center gap-1.5 px-4 pt-3 pb-1.5">
-                <Hash className="h-3.5 w-3.5 text-primary" />
-                <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">标签</h3>
-              </div>
-              <div className="flex flex-wrap gap-1.5 px-4 pb-3">
+            {/* Tag results */}
+            {tagResults.length > 0 && (
+              <div>
+                <div className="px-4 py-3 text-sm font-bold">标签</div>
                 {tagResults.map(([tag, count]) => (
-                  <button key={tag} onClick={() => setQuery(tag)} className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                    #{tag}
-                    <span className="text-[10px] text-primary/60">{count}</span>
+                  <button
+                    key={tag}
+                    onClick={() => handleSearch(tag)}
+                    className="flex w-full items-center gap-3 px-4 py-3 hover:bg-primary/5 dark:hover:bg-white/5 transition-colors text-left"
+                  >
+                    <Hash className="h-5 w-5 text-muted-foreground" />
+                    <div className="flex flex-col">
+                      <span className="text-base font-semibold">#{tag}</span>
+                      <span className="text-sm text-muted-foreground">{formatCount(count)} 篇帖子</span>
+                    </div>
                   </button>
                 ))}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* User results */}
-          {userResults.length > 0 && (
-            <div>
-              {tagResults.length > 0 && <div className="mx-4 h-px bg-border/20" />}
-              <h3 className="px-4 pt-2.5 pb-1 text-xs font-bold text-muted-foreground uppercase tracking-wider">用户</h3>
-              <div className="flex flex-col px-2 pb-2">
-                {userResults.slice(0, 4).map((user) => (
-                  <div key={user.id} className="flex items-center gap-2.5 rounded-lg px-2 py-2 hover:bg-muted/30 transition-colors">
-                    <Link href={`/profile/${user.id}`} className="shrink-0" onClick={() => setQuery("")}>
-                      <Avatar className="h-8 w-8">
+            {/* User results */}
+            {userResults.length > 0 && (
+              <div>
+                {tagResults.length > 0 && <div className="h-px bg-border/40" />}
+                <div className="px-4 py-3 text-sm font-bold">用户</div>
+                {userResults.slice(0, 5).map((user) => (
+                  <div key={user.id} className="flex items-center gap-3 px-4 py-3 hover:bg-primary/5 dark:hover:bg-white/5 transition-colors">
+                    <Link href={`/profile/${user.id}`} className="shrink-0" onClick={() => handleSearch("")}>
+                      <Avatar className="h-10 w-10">
                         <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback className="text-xs">{user.name[0]}</AvatarFallback>
+                        <AvatarFallback className="text-sm">{user.name[0]}</AvatarFallback>
                       </Avatar>
                     </Link>
                     <div className="flex flex-1 flex-col min-w-0">
-                      <Link href={`/profile/${user.id}`} className="text-sm font-semibold leading-tight text-card-foreground hover:underline truncate" onClick={() => setQuery("")}>{user.name}</Link>
-                      <span className="text-[11px] text-muted-foreground leading-tight truncate">@{user.handle}</span>
+                      <Link
+                        href={`/profile/${user.id}`}
+                        className="text-base font-bold truncate hover:underline"
+                        onClick={() => handleSearch("")}
+                      >
+                        {user.name}
+                      </Link>
+                      <span className="text-sm text-muted-foreground truncate">@{user.handle}</span>
                     </div>
                     <FollowButton userId={user.id} size="sm" />
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Trending */}
-      {!isSearching && trendingTags.length > 0 && (
-        <div className="glass-card">
-          <div className="flex items-center gap-2 px-4 pt-3.5 pb-1">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-bold text-card-foreground">热门话题</h2>
+            )}
           </div>
-          <div className="flex flex-col px-1 pb-1">
-            {trendingTags.map(([tag, count]) => (
-              <button
-                key={tag}
-                onClick={() => setQuery(tag)}
-                className="flex flex-col gap-0 px-3 py-2 rounded-lg hover:bg-muted/30 transition-colors text-left"
-              >
-                <span className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">趋势</span>
-                <span className="text-sm font-semibold text-card-foreground">#{tag}</span>
-                <span className="text-[11px] text-muted-foreground">{formatCount(count)} 篇帖子使用</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+        )}
 
-      {/* Suggested users */}
-      {!isSearching && suggestedUsers.length > 0 && (
-        <div className="glass-card">
-          <h2 className="text-sm font-bold text-card-foreground px-4 pt-3.5 pb-2">推荐关注</h2>
-          <div className="flex flex-col px-2 pb-2">
-            {suggestedUsers.map((user) => (
-              <div key={user.id} className="flex items-center gap-2.5 rounded-lg px-2 py-2 hover:bg-muted/30 transition-colors">
-                <Link href={`/profile/${user.id}`} className="shrink-0">
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="text-xs">{user.name[0]}</AvatarFallback>
-                  </Avatar>
-                </Link>
-                <div className="flex flex-1 flex-col min-w-0">
-                  <Link href={`/profile/${user.id}`} className="text-sm font-semibold leading-tight text-card-foreground hover:underline truncate">{user.name}</Link>
-                  <span className="text-[11px] text-muted-foreground leading-tight truncate">@{user.handle}</span>
+        {/* Trending & Suggested (only show when not searching) */}
+        {!trimmed && !isSearching && (
+          <>
+            {/* Trending */}
+            {trendingTags.length > 0 && (
+              <div className="glass-card overflow-hidden">
+                <h2 className="px-4 py-3 text-xl font-bold">中国的趋势</h2>
+                <div className="flex flex-col">
+                  {trendingTags.map(([tag, count], index) => (
+                    <button
+                      key={tag}
+                      onClick={() => handleSearch(tag)}
+                      className="flex gap-4 px-4 py-3 hover:bg-primary/5 dark:hover:bg-white/5 transition-colors text-left"
+                    >
+                      <div className="flex flex-col items-start min-w-[40px]">
+                        <span className="text-base text-muted-foreground">{index + 1}</span>
+                        <span className="text-xs text-muted-foreground">趋势</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-base font-bold">#{tag}</span>
+                        <span className="text-sm text-muted-foreground">{formatCount(count)} 篇帖子</span>
+                      </div>
+                    </button>
+                  ))}
                 </div>
-                <FollowButton userId={user.id} size="sm" />
+                <button
+                  onClick={() => {}}
+                  className="px-4 py-3 text-sm text-primary hover:bg-primary/5 dark:hover:bg-white/5 transition-colors text-left w-full"
+                >
+                  显示更多
+                </button>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            )}
+
+            {/* Suggested users */}
+            {suggestedUsers.length > 0 && (
+              <div className="glass-card overflow-hidden">
+                <h2 className="px-4 py-3 text-xl font-bold">推荐关注</h2>
+                <div className="flex flex-col">
+                  {suggestedUsers.map((user) => (
+                    <div key={user.id} className="flex items-center gap-3 px-4 py-3 hover:bg-primary/5 dark:hover:bg-white/5 transition-colors">
+                      <Link href={`/profile/${user.id}`} className="shrink-0">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback className="text-sm">{user.name[0]}</AvatarFallback>
+                        </Avatar>
+                      </Link>
+                      <div className="flex flex-1 flex-col min-w-0">
+                        <Link
+                          href={`/profile/${user.id}`}
+                          className="text-base font-bold truncate hover:underline"
+                        >
+                          {user.name}
+                        </Link>
+                        <span className="text-sm text-muted-foreground truncate">@{user.handle}</span>
+                      </div>
+                      <FollowButton userId={user.id} size="sm" />
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => {}}
+                  className="px-4 py-3 text-sm text-primary hover:bg-primary/5 dark:hover:bg-white/5 transition-colors text-left w-full"
+                >
+                  显示更多
+                </button>
+              </div>
+            )}
+
+            {/* Footer links */}
+            <div className="flex flex-wrap gap-x-3 gap-y-1 px-4 py-3 text-sm text-muted-foreground">
+              <a href="#" className="hover:underline">服务条款</a>
+              <a href="#" className="hover:underline">隐私政策</a>
+              <a href="#" className="hover:underline">Cookie政策</a>
+              <a href="#" className="hover:underline">辅助功能</a>
+              <a href="#" className="hover:underline">广告信息</a>
+              <span>© 2026 weiyan</span>
+            </div>
+          </>
+        )}
+      </div>
     </aside>
   )
 }

@@ -30,8 +30,12 @@ const LANGUAGES = [
   { code: "ja", name: "日本語", flag: "🇯🇵" }
 ] as const
 
+interface LanguageSwitcherProps {
+  showLabel?: boolean
+}
+
 // 导出语言切换器组件（函数式组件）
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ showLabel = false }: LanguageSwitcherProps) {
   // 获取当前激活的语言环境（如 "zh"）
   const locale = useLocale()
   // 获取路由实例，用于跳转页面
@@ -48,7 +52,33 @@ export function LanguageSwitcher() {
     router.push(pathname, { locale: newLocale })
   }
 
-  // 组件渲染部分
+  // 下拉菜单模式（用于左侧边栏用户菜单）
+  if (showLabel) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="flex items-center gap-3 w-full rounded-lg px-3 py-2 hover:bg-muted/50 transition-colors text-left">
+            <Globe className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm">语言</span>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-40">
+          {LANGUAGES.map((lang) => (
+            <DropdownMenuItem
+              key={lang.code}
+              onClick={() => switchLanguage(lang.code)}
+              className={locale === lang.code ? "bg-accent" : ""}
+            >
+              <span className="mr-2">{lang.flag}</span>
+              {lang.name}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
+  // 组件渲染部分（按钮模式，用于导航栏）
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -30,7 +30,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     if (isLoggedIn) markNotificationsRead()
-  }, [markNotificationsRead, isLoggedIn])
+  }, [isLoggedIn])
 
   const sortedNotifications = [...notifications].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -52,7 +52,7 @@ export default function NotificationsPage() {
 
           return (
             <div key={notif.id}>
-              <div className={cn("flex gap-3 px-5 py-3 transition-colors hover:bg-muted/20", !notif.read && "bg-primary/5")}>
+              <div className={cn("flex gap-3 px-5 py-3 -mx-5 transition-colors hover:bg-primary/5 dark:hover:bg-muted/20", !notif.read && "bg-primary/5")}>
                 <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full", config.bgColor)}>
                   <Icon className={cn("h-4 w-4", config.color)} />
                 </div>

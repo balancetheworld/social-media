@@ -21,6 +21,7 @@ interface SocialContextType {
   toggleFollow: (targetUserId: string) => Promise<void>
   sendMessage: (conversationId: string, content: string) => Promise<void>
   markNotificationsRead: () => Promise<void>
+  markConversationRead: (conversationId: string) => void
   unreadNotificationCount: number
   unreadMessageCount: number
   login: (username: string, password: string) => Promise<void>
@@ -28,6 +29,9 @@ interface SocialContextType {
   logout: () => Promise<void>
   refreshData: () => Promise<void>
   deletePost: (postId: string) => Promise<void>
+  showComposeDialog: boolean
+  openComposeDialog: () => void
+  closeComposeDialog: () => void
 }
 
 const SocialContext = createContext<SocialContextType | null>(null)
@@ -39,6 +43,7 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [notifs, setNotifs] = useState<Notification[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showComposeDialog, setShowComposeDialog] = useState(false)
 
   const currentUserId = currentUser?.id ?? null
   const isLoggedIn = !!currentUser
@@ -282,6 +287,22 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  // 标记对话消息为已读（前端状态更新）
+  const markConversationRead = useCallback((conversationId: string) => {
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === conversationId
+          ? {
+              ...conv,
+              messages: conv.messages.map((m) =>
+                m.senderId !== currentUserId ? { ...m, read: true } : m
+              ),
+            }
+          : conv
+      )
+    )
+  }, [currentUserId])
+
   const unreadNotificationCount = notifs.filter((n) => !n.read).length
 
   const unreadMessageCount = conversations.reduce((count, conv) => {
@@ -290,6 +311,9 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
       conv.messages.filter((m) => !m.read && m.senderId !== currentUserId).length
     )
   }, 0)
+
+  const openComposeDialog = useCallback(() => setShowComposeDialog(true), [])
+  const closeComposeDialog = useCallback(() => setShowComposeDialog(false), [])
 
   return (
     <SocialContext.Provider
@@ -310,6 +334,7 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
         toggleFollow,
         sendMessage,
         markNotificationsRead,
+        markConversationRead,
         unreadNotificationCount,
         unreadMessageCount,
         login,
@@ -317,6 +342,9 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
         logout,
         refreshData,
         deletePost,
+        showComposeDialog,
+        openComposeDialog,
+        closeComposeDialog,
       }}
     >
       {children}

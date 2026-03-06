@@ -8,7 +8,7 @@ import { LoginPromptProvider } from '@/components/ui/login-prompt'
 import { ThemeProvider } from '@/components/theme-provider'
 import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
-import './globals.css'
+import '../globals.css'
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#e05d36',
+  themeColor: 'rgb(242, 196, 196)',
   width: 'device-width',
   initialScale: 1,
 }

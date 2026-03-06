@@ -49,17 +49,17 @@ export default function RegisterPage() {
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="displayName" className="text-sm font-medium text-card-foreground">{t("displayName")}</label>
-              <input id="displayName" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("displayNamePlaceholder")} required className="h-11 rounded-xl border border-border/50 bg-background/50 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all" />
+              <input id="displayName" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("displayNamePlaceholder")} required className="glass-input h-11 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground transition-all" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="username" className="text-sm font-medium text-card-foreground">{t("username")}</label>
-              <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder={t("usernameDesc")} required className="h-11 rounded-xl border border-border/50 bg-background/50 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all" />
+              <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder={t("usernameDesc")} required className="glass-input h-11 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground transition-all" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="password" className="text-sm font-medium text-card-foreground">{t("password")}</label>
-              <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("passwordMin")} required minLength={6} className="h-11 rounded-xl border border-border/50 bg-background/50 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all" />
+              <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("passwordMin")} required minLength={6} className="glass-input h-11 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground transition-all" />
             </div>
 
             <Button type="submit" disabled={loading} className="h-11 rounded-xl text-sm font-medium">

@@ -43,7 +43,7 @@ function ProfileContent({ userId }: { userId: string }) {
     <div className="glass-card overflow-hidden">
       {/* Header */}
       <header className="flex h-12 items-center gap-4 border-b border-border/30 px-5">
-        <Link href="/" className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted/30 transition-colors" aria-label={t("backToHome")}>
+        <Link href="/" className="glass-button flex h-8 w-8 items-center justify-center rounded-full transition-colors" aria-label={t("backToHome")}>
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div className="flex flex-col">

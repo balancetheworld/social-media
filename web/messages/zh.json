@@ -29,7 +29,11 @@
     "logout": "退出登录",
     "post": "发布",
     "backToTop": "回到顶部",
-    "settings": "设置"
+    "settings": "设置",
+    "confirmLogout": "确认登出",
+    "logoutConfirmMessage": "您确定要登出账户吗？",
+    "notLoggedIn": "未登录",
+    "clickToLogin": "点击登录"
   },
   "auth": {
     "welcomeBack": "欢迎回来",
