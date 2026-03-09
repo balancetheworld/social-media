@@ -246,13 +246,13 @@ export function PostCard({ post }: { post: Post }) {
             </Dialog>
           )}
         </div>
-      </div>
 
-      {showComments && (
-        <div className="border-t border-border/40 mt-2 pt-3">
-          <CommentList post={post} />
-        </div>
-      )}
+        {showComments && (
+          <div className="border-t border-border/40 mt-3 pt-3">
+            <CommentList post={post} />
+          </div>
+        )}
+      </div>
     </article>
   )
 }

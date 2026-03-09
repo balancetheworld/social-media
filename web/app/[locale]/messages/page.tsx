@@ -160,7 +160,7 @@ export default function MessagesPage() {
                               "max-w-[70%] rounded-2xl px-4 py-2",
                               isOwn
                                 ? "bg-primary text-primary-foreground rounded-br-sm"
-                                : "bg-muted text-foreground rounded-bl-sm"
+                                : "bg-[#ffffff] text-foreground rounded-bl-sm border border-border/20"
                             )}>
                               <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
                               <p className={cn(

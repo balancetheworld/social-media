@@ -43,6 +43,10 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
   const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
     setTheme(newTheme)
     setShowPopup(false)
+    // 刷新页面以确保主题完全应用
+    setTimeout(() => {
+      window.location.reload()
+    }, 100)
   }
 
   // 滑动开关模式（用于导航栏）
@@ -58,6 +62,9 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
             } else {
               setTheme("light")
             }
+            setTimeout(() => {
+              window.location.reload()
+            }, 100)
           }}
           className="relative h-7 w-12 rounded-full bg-muted transition-all duration-300 hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-ring/50"
           aria-label={`${t("theme")}: ${currentTheme === "light" ? t("light") : currentTheme === "dark" ? t("dark") : t("system")}`}
@@ -130,21 +137,36 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-40">
         <DropdownMenuItem
-          onClick={() => setTheme("light")}
+          onClick={() => {
+            setTheme("light")
+            setTimeout(() => {
+              window.location.reload()
+            }, 100)
+          }}
           className={currentTheme === "light" ? "bg-accent" : ""}
         >
           <Sun className="mr-2 h-4 w-4" />
           {t("light")}
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => setTheme("dark")}
+          onClick={() => {
+            setTheme("dark")
+            setTimeout(() => {
+              window.location.reload()
+            }, 100)
+          }}
           className={currentTheme === "dark" ? "bg-accent" : ""}
         >
           <Moon className="mr-2 h-4 w-4" />
           {t("dark")}
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => setTheme("system")}
+          onClick={() => {
+            setTheme("system")
+            setTimeout(() => {
+              window.location.reload()
+            }, 100)
+          }}
           className={currentTheme === "system" ? "bg-accent" : ""}
         >
           <Monitor className="mr-2 h-4 w-4" />
