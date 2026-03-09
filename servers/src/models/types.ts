@@ -5,6 +5,9 @@
 
 // ==================== 用户相关 ====================
 
+export type UserRole = 'user' | 'admin'
+export type UserStatus = 'active' | 'suspended' | 'banned'
+
 export interface User {
   id: string
   name: string
@@ -17,6 +20,11 @@ export interface User {
   coverImage: string
   followers: string[]
   following: string[]
+  role: UserRole
+  status: UserStatus
+  canPost: boolean
+  canComment: boolean
+  canSendMessage: boolean
 }
 
 export interface UserRow {
@@ -30,6 +38,11 @@ export interface UserRow {
   verified: number
   cover_image: string
   created_at: string
+  role: string
+  status: string
+  can_post: number
+  can_comment: number
+  can_send_message: number
 }
 
 // ==================== 帖子相关 ====================

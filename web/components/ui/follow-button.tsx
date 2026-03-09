@@ -92,7 +92,7 @@ export function FollowButton({ userId, size = "sm", className }: FollowButtonPro
     <Button
       size={size}
       className={cn(
-        "rounded-full bg-foreground text-background hover:bg-foreground/90 transition-all",
+        "rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md shadow-primary/10",
         size === "sm" ? "h-7 px-3 text-xs" : "h-8 px-4 text-xs",
         className
       )}

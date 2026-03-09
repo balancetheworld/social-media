@@ -33,7 +33,9 @@
     "confirmLogout": "ログアウトの確認",
     "logoutConfirmMessage": "ログアウトしてもよろしいですか？",
     "notLoggedIn": "ログインしていません",
-    "clickToLogin": "クリックしてログイン"
+    "clickToLogin": "クリックしてログイン",
+    "marbleBoard": "大理石板",
+    "adminPanel": "管理パネル"
   },
   "auth": {
     "welcomeBack": "おかえりなさい",
@@ -198,5 +200,23 @@
     "description": "この操作は取り消せません。削除してもよろしいですか？",
     "confirm": "削除を確認",
     "cancel": "キャンセル"
+  },
+  "admin": {
+    "marbleBoard": "大理石板",
+    "subtitle": "管理者コントロールパネル",
+    "accessDenied": "アクセス拒否",
+    "adminOnly": "このページは管理者のみアクセスできます",
+    "postsManagement": "投稿管理",
+    "usersManagement": "ユーザー管理",
+    "searchPosts": "投稿内容または作者を検索...",
+    "searchUsers": "ユーザー名または表示名を検索...",
+    "noPosts": "まだ投稿がありません",
+    "noUsers": "まだユーザーがいません",
+    "noSearchResults": "一致する結果が見つかりませんでした",
+    "totalPosts": "合計 {count} 件の投稿",
+    "totalUsers": "合計 {count} 人のユーザー",
+    "deletePost": "投稿を削除",
+    "confirmDeletePost": "この投稿を削除してもよろしいですか？この操作は取り消せません。",
+    "deleteFailed": "削除に失敗しました。もう一度お試しください"
   }
 }

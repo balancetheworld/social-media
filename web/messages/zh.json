@@ -33,7 +33,9 @@
     "confirmLogout": "确认登出",
     "logoutConfirmMessage": "您确定要登出账户吗？",
     "notLoggedIn": "未登录",
-    "clickToLogin": "点击登录"
+    "clickToLogin": "点击登录",
+    "marbleBoard": "大理石板",
+    "adminPanel": "管理面板"
   },
   "auth": {
     "welcomeBack": "欢迎回来",
@@ -198,5 +200,23 @@
     "description": "删除后无法恢复，确定要删除吗？",
     "confirm": "确认删除",
     "cancel": "取消"
+  },
+  "admin": {
+    "marbleBoard": "大理石板",
+    "subtitle": "管理员控制面板",
+    "accessDenied": "访问被拒绝",
+    "adminOnly": "此页面仅供管理员访问",
+    "postsManagement": "帖子管理",
+    "usersManagement": "用户管理",
+    "searchPosts": "搜索帖子内容或作者...",
+    "searchUsers": "搜索用户名或显示名称...",
+    "noPosts": "暂无帖子",
+    "noUsers": "暂无用户",
+    "noSearchResults": "没有找到匹配的结果",
+    "totalPosts": "共 {count} 条帖子",
+    "totalUsers": "共 {count} 位用户",
+    "deletePost": "删除帖子",
+    "confirmDeletePost": "确认删除此帖子吗？此操作不可撤销。",
+    "deleteFailed": "删除失败，请重试"
   }
 }

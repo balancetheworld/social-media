@@ -132,6 +132,22 @@ export async function deletePost(postId: number, userId: number): Promise<void> 
 }
 
 /**
+ * 管理员删除帖子（不检查作者）
+ */
+export async function adminDeletePost(postId: number): Promise<void> {
+  const post = await PostRepo.findById(postId)
+  if (!post) {
+    throw new Error('帖子不存在')
+  }
+
+  // 清理点赞记录
+  await LikeRepo.deleteByTarget('post', postId)
+
+  // 删除帖子
+  await PostRepo.deleteById(postId)
+}
+
+/**
  * 帖子点赞/取消点赞
  */
 export async function togglePostLike(postId: number, userId: number): Promise<{ liked: boolean }> {

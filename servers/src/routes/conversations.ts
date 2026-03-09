@@ -49,6 +49,25 @@ router.post('/', requireAuth, async (ctx) => {
   const user = ctx.state.user
   const { userId } = ctx.request.body as any
 
+  // 检查用户权限
+  if (!user.can_send_message) {
+    ctx.status = 403
+    ctx.body = { error: '您已被禁止发送私信' }
+    return
+  }
+
+  // 检查用户状态
+  if (user.status === 'suspended') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被禁言，无法发送私信' }
+    return
+  }
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封禁' }
+    return
+  }
+
   if (!userId) {
     ctx.status = 400
     ctx.body = { error: '请指定用户' }
@@ -81,6 +100,25 @@ router.post('/:id/messages', requireAuth, async (ctx) => {
   const user = ctx.state.user
   const convId = Number(ctx.params.id)
   const { content } = ctx.request.body as any
+
+  // 检查用户权限
+  if (!user.can_send_message) {
+    ctx.status = 403
+    ctx.body = { error: '您已被禁止发送私信' }
+    return
+  }
+
+  // 检查用户状态
+  if (user.status === 'suspended') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被禁言，无法发送私信' }
+    return
+  }
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封禁' }
+    return
+  }
 
   try {
     const message = await ConversationService.sendMessage({

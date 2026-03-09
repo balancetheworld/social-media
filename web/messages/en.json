@@ -33,7 +33,9 @@
     "confirmLogout": "Confirm Logout",
     "logoutConfirmMessage": "Are you sure you want to logout?",
     "notLoggedIn": "Not logged in",
-    "clickToLogin": "Click to login"
+    "clickToLogin": "Click to login",
+    "marbleBoard": "Marble Board",
+    "adminPanel": "Admin Panel"
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -198,5 +200,23 @@
     "description": "This cannot be undone. Are you sure you want to delete?",
     "confirm": "Confirm delete",
     "cancel": "Cancel"
+  },
+  "admin": {
+    "marbleBoard": "Marble Board",
+    "subtitle": "Admin Control Panel",
+    "accessDenied": "Access Denied",
+    "adminOnly": "This page is for administrators only",
+    "postsManagement": "Posts Management",
+    "usersManagement": "Users Management",
+    "searchPosts": "Search posts content or author...",
+    "searchUsers": "Search username or display name...",
+    "noPosts": "No posts yet",
+    "noUsers": "No users yet",
+    "noSearchResults": "No matching results found",
+    "totalPosts": "Total {count} posts",
+    "totalUsers": "Total {count} users",
+    "deletePost": "Delete post",
+    "confirmDeletePost": "Are you sure you want to delete this post? This action cannot be undone.",
+    "deleteFailed": "Delete failed, please try again"
   }
 }

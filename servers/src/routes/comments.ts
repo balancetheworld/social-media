@@ -15,11 +15,18 @@ const router = new Router({ prefix: '/api/comments' })
  * 评论点赞/取消点赞（需要登录）
  */
 router.post('/:id/like', requireAuth, async (ctx) => {
-  const userId = Number(ctx.state.user.id)
+  const user = ctx.state.user
   const commentId = Number(ctx.params.id)
 
+  // 检查用户状态
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封禁' }
+    return
+  }
+
   try {
-    const result = await PostService.toggleCommentLike(commentId, userId)
+    const result = await PostService.toggleCommentLike(commentId, Number(user.id))
     ctx.body = result
   } catch (error: any) {
     ctx.status = 400

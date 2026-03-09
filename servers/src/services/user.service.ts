@@ -27,6 +27,11 @@ export async function formatUser(row: any): Promise<User> {
     coverImage: row.cover_image || '',
     followers: followers.map(id => String(id)),
     following: following.map(id => String(id)),
+    role: row.role || 'user',
+    status: row.status || 'active',
+    canPost: row.can_post !== 0,
+    canComment: row.can_comment !== 0,
+    canSendMessage: row.can_send_message !== 0,
   }
 }
 

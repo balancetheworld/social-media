@@ -17,7 +17,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 
 // Lucide React 图标库：导入所需的线性图标组件（新增 Settings 设置图标）
-import { Home, Bell, Mail, LogOut, PenSquare, User, Settings } from "lucide-react"
+import { Home, Bell, Mail, LogOut, PenSquare, User, Settings, Shield } from "lucide-react"
 
 // 自定义工具函数：cn = clsx + tailwind-merge 组合
 // 作用：安全拼接 Tailwind CSS 类名，解决类名冲突和条件判断问题
@@ -177,10 +177,10 @@ export function LeftSidebar() {
 
           {/* 2. 用户头像卡片（不可点击展开，仅展示/跳转） */}
           <div className=" mb-4 flex items-center">
-            {/* 已登录状态：显示大尺寸用户头像卡片，点击跳个人资料页 */}
+            {/* 已登录状态：显示大尺寸用户头像卡片，点击跳个人资料页（管理员跳管理面板） */}
             {isLoggedIn && currentUser ? (
               <Link
-                href={`/profile/${currentUserId}`} // 跳转到当前用户的个人资料页
+                href={currentUser.role === 'admin' ? '/admin' : `/profile/${currentUserId}`} // 管理员跳管理面板，普通用户跳个人资料
                 // 样式说明：
                 // - flex-col：垂直排列头像和文字
                 // - items-center：水平居中
@@ -191,15 +191,17 @@ export function LeftSidebar() {
                 className="flex flex-col ml-10 items-center gap-6 rounded-2xl p-6 transition-colors"
               >
                 {/* 超大尺寸头像：h-28 w-28（7rem），突出用户信息 */}
-                <Avatar className="h-28 w-28">
+                <Avatar className="h-28 w-28 border-2 border-primary shadow-md shadow-primary/15">
                   <AvatarImage src={currentUser.avatar} alt={currentUser.name} /> {/* 优先显示用户头像 */}
                   <AvatarFallback>{currentUser.name[0]}</AvatarFallback> {/* 降级显示用户名首字母 */}
                 </Avatar>
-                
+
                 {/* 用户信息区域：居中显示，支持文本截断 */}
                 <div className="flex flex-col items-center min-w-0">
                   <span className="text-xl font-bold truncate w-full text-center">{currentUser.name}</span> {/* 用户名：大号加粗 */}
-                  <span className="text-md text-muted-foreground truncate">@{currentUser.handle}</span> {/* 用户名 handle：灰色中等字号 */}
+                  <span className="text-md text-muted-foreground truncate">
+                    {currentUser.role === 'admin' ? t("nav.adminPanel") : `@${currentUser.handle}`}
+                  </span> {/* 管理员显示"大理石板"，普通用户显示 handle */}
                 </div>
               </Link>
             ) : (
@@ -288,8 +290,8 @@ export function LeftSidebar() {
               )
             })}
 
-            {/* 个人资料导航项（仅登录后显示） */}
-            {isLoggedIn && currentUserId && (
+            {/* 个人资料导航项（仅登录后显示，管理员不显示） */}
+            {isLoggedIn && currentUserId && currentUser?.role !== 'admin' && (
               <Link
                 href={`/profile/${currentUserId}`} // 跳转到当前用户的个人资料页
                 // 激活状态判断：
@@ -304,6 +306,22 @@ export function LeftSidebar() {
               >
                 <User className="h-6 w-6" strokeWidth={pathname.startsWith("/profile/") && pathname.split("/").length === 3 ? 2.5 : 2} />
                 <span className="max-w-[150px] truncate">{t("nav.profile")}</span>
+              </Link>
+            )}
+
+            {/* 管理员专用：大理石板导航项 */}
+            {isLoggedIn && currentUser?.role === 'admin' && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "flex items-center gap-5 rounded-full px-4 py-3 text-xl transition-colors group",
+                  pathname.startsWith("/admin")
+                    ? "font-bold text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                <Shield className="h-6 w-6" strokeWidth={pathname.startsWith("/admin") ? 2.5 : 2} />
+                <span className="max-w-[150px] truncate">{t("nav.marbleBoard")}</span>
               </Link>
             )}
 

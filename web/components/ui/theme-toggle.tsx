@@ -1,6 +1,6 @@
 "use client"
 
-import { Moon, Sun, Monitor } from "lucide-react"
+import { Moon, Sun, Monitor, Trees } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -38,9 +38,9 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
     )
   }
 
-  const currentTheme = theme === "system" ? "system" : theme
+  const currentTheme = theme === "system" ? "system" : (theme || "light")
 
-  const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
+  const handleThemeChange = (newTheme: "light" | "dark" | "system" | "forest") => {
     setTheme(newTheme)
     setShowPopup(false)
     // 刷新页面以确保主题完全应用
@@ -49,43 +49,50 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
     }, 100)
   }
 
+  // 定义所有主题及其图标
+  const themes: Array<"light" | "dark" | "forest"> = ["light", "dark", "forest"]
+  const allOptions = [...themes, "system"] as const
+
+  // 获取当前主题在列表中的索引
+  const currentIndex = currentTheme === "system" ? 3 : themes.indexOf(currentTheme as "light" | "dark" | "forest")
+
   // 滑动开关模式（用于导航栏）
   if (!showLabel) {
+    // 计算滑块位置：4 个主题平分宽度
+    const getSliderPosition = () => {
+      const step = 100 / 4
+      return step * currentIndex + step / 2
+    }
+
     return (
       <div className="relative">
         <button
           onClick={() => {
-            if (currentTheme === "light") {
-              setTheme("dark")
-            } else if (currentTheme === "dark") {
-              setTheme("system")
-            } else {
-              setTheme("light")
-            }
-            setTimeout(() => {
-              window.location.reload()
-            }, 100)
+            const nextIndex = (currentIndex + 1) % 4
+            handleThemeChange(allOptions[nextIndex] as any)
           }}
-          className="relative h-7 w-12 rounded-full bg-muted transition-all duration-300 hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-ring/50"
-          aria-label={`${t("theme")}: ${currentTheme === "light" ? t("light") : currentTheme === "dark" ? t("dark") : t("system")}`}
+          className="relative h-7 w-14 rounded-full bg-muted transition-all duration-300 hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-ring/50"
+          aria-label={`${t("theme")}: ${currentTheme === "light" ? t("light") : currentTheme === "dark" ? t("dark") : currentTheme === "forest" ? "森林" : t("system")}`}
           onMouseEnter={() => setShowPopup(true)}
           onMouseLeave={() => setShowPopup(false)}
         >
           <div
-            className={`absolute top-1 h-5 w-5 rounded-full bg-primary shadow-md transition-all duration-300 ease-out ${
-              currentTheme === "light" ? "left-1" : currentTheme === "dark" ? "left-[calc(100%-1.25rem)]" : "left-1/2 -translate-x-1/2"
-            }`}
+            className="absolute top-1 h-5 w-5 rounded-full bg-primary shadow-md transition-all duration-300 ease-out"
+            style={{ left: `calc(${getSliderPosition()}% - 10px)` }}
           >
             <div className="flex h-full w-full items-center justify-center text-primary-foreground">
               {currentTheme === "light" && <Sun className="h-3 w-3" />}
               {currentTheme === "dark" && <Moon className="h-3 w-3" />}
+              {currentTheme === "forest" && <Trees className="h-3 w-3" />}
               {currentTheme === "system" && <Monitor className="h-3 w-3" />}
             </div>
           </div>
 
-          <div className="absolute inset-0 flex items-center justify-between px-1.5 opacity-30">
-            <Sun className="h-3 w-3" />
-            <Moon className="h-3 w-3" />
+          <div className="absolute inset-0 flex items-center justify-between px-2 opacity-30">
+            <Sun className="h-2.5 w-2.5" />
+            <Moon className="h-2.5 w-2.5" />
+            <Trees className="h-2.5 w-2.5" />
+            <Monitor className="h-2.5 w-2.5" />
           </div>
         </button>
 
@@ -109,6 +116,15 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
               >
                 <Moon className="h-3.5 w-3.5" />
                 <span>{t("dark")}</span>
+              </button>
+              <button
+                onClick={() => handleThemeChange("forest")}
+                className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs transition-colors ${
+                  currentTheme === "forest" ? "bg-primary/10 text-primary" : "text-foreground/70 hover:bg-muted/50"
+                }`}
+              >
+                <Trees className="h-3.5 w-3.5" />
+                <span>森林</span>
               </button>
               <button
                 onClick={() => handleThemeChange("system")}
@@ -159,6 +175,18 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
         >
           <Moon className="mr-2 h-4 w-4" />
           {t("dark")}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme("forest")
+            setTimeout(() => {
+              window.location.reload()
+            }, 100)
+          }}
+          className={currentTheme === "forest" ? "bg-accent" : ""}
+        >
+          <Trees className="mr-2 h-4 w-4" />
+          森林
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {

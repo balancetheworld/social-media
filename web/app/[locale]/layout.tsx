@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: 'rgb(242, 196, 196)',
+  themeColor: 'rgb(121, 173, 195)',
   width: 'device-width',
   initialScale: 1,
 }
@@ -63,9 +63,10 @@ export default async function LocaleLayout({
     <html lang={lang} className={`${notoSansSC.variable} ${notoSansJP.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased">
         <ThemeProvider
-          attribute="class"
+          attribute="data-theme"
           defaultTheme="system"
           enableSystem
+          themes={["light", "dark", "forest"]}
         >
           <NextIntlClientProvider messages={messages}>
             <SocialProvider>

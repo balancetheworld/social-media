@@ -14,6 +14,8 @@ import uploadRoutes from "./routes/upload.js"
 import conversationRoutes from "./routes/conversations.js"
 import notificationRoutes from "./routes/notifications.js"
 import commentRoutes from "./routes/comments.js"
+import adminPostsRoutes from "./routes/admin-posts.js"
+import adminUsersRoutes from "./routes/admin-users.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const uploadsDir = path.join(__dirname, "..", "uploads")
@@ -68,6 +70,8 @@ app.use(uploadRoutes.routes()).use(uploadRoutes.allowedMethods())
 app.use(conversationRoutes.routes()).use(conversationRoutes.allowedMethods())
 app.use(notificationRoutes.routes()).use(notificationRoutes.allowedMethods())
 app.use(commentRoutes.routes()).use(commentRoutes.allowedMethods())
+app.use(adminPostsRoutes.routes()).use(adminPostsRoutes.allowedMethods())
+app.use(adminUsersRoutes.routes()).use(adminUsersRoutes.allowedMethods())
 
 app.listen(PORT, () => {
   console.log(`[servers] Koa API running on http://localhost:${PORT}`)

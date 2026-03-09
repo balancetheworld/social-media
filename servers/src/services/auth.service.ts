@@ -3,7 +3,32 @@
  * 负责认证相关的业务逻辑
  */
 
-import { createHash, randomBytes } from 'crypto'
+import { createHash, randomBytes, randomInt } from 'crypto'
+
+/**
+ * 本地头像资源列表
+ */
+const localAvatars = [
+  '/avatar/avatar1.jpg',
+  '/avatar/avatar2.jpg',
+  '/avatar/avatar3.jpg',
+  '/avatar/avatar4.jpg',
+  '/avatar/avatar5.jpg',
+  '/avatar/a6.jpg',
+  '/avatar/a7.jpg',
+  '/avatar/a8.jpg',
+  '/avatar/a9.jpg',
+  '/avatar/a10.jpg',
+  '/avatar/a11.jpg',
+  '/avatar/a12.jpg',
+]
+
+/**
+ * 随机获取一个本地头像
+ */
+export function getRandomAvatar(): string {
+  return localAvatars[randomInt(0, localAvatars.length)]
+}
 import * as SessionRepo from '../repositories/session.repository.js'
 import * as UserRepo from '../repositories/user.repository.js'
 import * as UserService from './user.service.js'
@@ -106,9 +131,8 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
     return { success: false, error: '用户名已存在' }
   }
 
-  // 生成头像
-  const avatarSeed = data.username.replace(/[^a-zA-Z]/g, '') || 'user'
-  const avatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatarSeed}&backgroundColor=b6e3f4`
+  // 随机选择本地头像
+  const avatar = getRandomAvatar()
 
   // 创建用户
   const passwordHash = hashPassword(data.password)

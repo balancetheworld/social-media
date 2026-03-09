@@ -27,6 +27,25 @@ router.post('/', requireAuth, async (ctx) => {
   const user = ctx.state.user
   const { content, tags, media } = ctx.request.body as any
 
+  // 检查用户权限
+  if (!user.can_post) {
+    ctx.status = 403
+    ctx.body = { error: '您已被禁止发帖' }
+    return
+  }
+
+  // 检查用户状态
+  if (user.status === 'suspended') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被禁言，无法发帖' }
+    return
+  }
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封禁' }
+    return
+  }
+
   try {
     const post = await PostService.createPost({
       authorId: Number(user.id),
@@ -66,6 +85,25 @@ router.post('/:id/comments', requireAuth, async (ctx) => {
   const user = ctx.state.user
   const postId = Number(ctx.params.id)
   const { content } = ctx.request.body as any
+
+  // 检查用户权限
+  if (!user.can_comment) {
+    ctx.status = 403
+    ctx.body = { error: '您已被禁止评论' }
+    return
+  }
+
+  // 检查用户状态
+  if (user.status === 'suspended') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被禁言，无法评论' }
+    return
+  }
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封禁' }
+    return
+  }
 
   try {
     const comment = await PostService.addComment({

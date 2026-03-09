@@ -92,7 +92,9 @@ function initTables(database: SqlJsDatabase) {
   database.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL,
     display_name TEXT NOT NULL, avatar TEXT DEFAULT '', bio TEXT DEFAULT '', location TEXT DEFAULT '',
-    verified INTEGER DEFAULT 0, cover_image TEXT DEFAULT '', created_at TEXT NOT NULL
+    verified INTEGER DEFAULT 0, cover_image TEXT DEFAULT '', created_at TEXT NOT NULL,
+    role TEXT DEFAULT 'user', status TEXT DEFAULT 'active',
+    can_post INTEGER DEFAULT 1, can_comment INTEGER DEFAULT 1, can_send_message INTEGER DEFAULT 1
   )`)
   database.run(`CREATE TABLE IF NOT EXISTS sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, user_id INTEGER NOT NULL,

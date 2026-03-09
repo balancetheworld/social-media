@@ -8,61 +8,93 @@
   --card-foreground: #1a1a1a;
   --popover: rgba(255, 255, 255, 0.75);
   --popover-foreground: #1a1a1a;
-  --primary: rgb(200, 130, 130);
+  --primary: rgb(121, 173, 195);
   --primary-foreground: #ffffff;
   --secondary: rgba(255, 255, 255, 0.5);
   --secondary-foreground: #1a1a1a;
   --muted: rgba(255, 255, 255, 0.4);
   --muted-foreground: #666666;
   --accent: rgba(255, 255, 255, 0.5);
-  --accent-foreground: rgb(180, 140, 140);
+  --accent-foreground: rgb(101, 153, 175);
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.3);
   --input: rgba(255, 255, 255, 0.3);
-  --ring: rgb(200, 130, 130);
+  --ring: rgb(121, 173, 195);
   --radius: 1rem;
 
   /* Glass effect variables */
   --glass-bg-light: rgba(255, 255, 255, 0.65);
-  --glass-bg-dark: rgba(30, 41, 59, 0.7);
+  --glass-bg-dark: rgba(29, 31, 33, 0.8);
   --glass-border-light: rgba(255, 255, 255, 0.4);
-  --glass-border-dark: rgba(255, 255, 255, 0.1);
+  --glass-border-dark: rgba(255, 255, 255, 0.08);
   --glass-shadow-light: 0 8px 32px rgba(0, 0, 0, 0.08);
-  --glass-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --glass-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
   --glass-highlight: rgba(255, 255, 255, 0.8);
-  --glow: rgba(200, 130, 130, 0.25);
+  --glow: rgba(121, 173, 195, 0.25);
 }
 
-.dark {
-  --background: #0a0a0b;
+[data-theme="dark"] {
+  --background: transparent;
   --foreground: #e4e4e7;
-  --card: rgba(30, 41, 59, 0.7);
+  --card: rgba(29, 31, 33, 0.7);
   --card-foreground: #e4e4e7;
-  --popover: rgba(30, 41, 59, 0.8);
+  --popover: rgba(29, 31, 33, 0.8);
   --popover-foreground: #e4e4e7;
-  --primary: rgb(242, 196, 196);
+  --primary: rgb(141, 193, 215);
   --primary-foreground: #1a1a1a;
   --secondary: rgba(255, 255, 255, 0.08);
   --secondary-foreground: #e4e4e7;
   --muted: rgba(255, 255, 255, 0.08);
   --muted-foreground: #a1a1aa;
   --accent: rgba(255, 255, 255, 0.1);
-  --accent-foreground: rgb(180, 140, 140);
+  --accent-foreground: rgb(101, 153, 175);
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.1);
-  --ring: rgb(242, 196, 196);
+  --ring: rgb(141, 193, 215);
 
-  --glass-bg-light: rgba(30, 41, 59, 0.7);
-  --glass-bg-dark: rgba(15, 23, 42, 0.8);
+  --glass-bg-light: rgba(29, 31, 33, 0.7);
+  --glass-bg-dark: rgba(29, 31, 33, 0.8);
   --glass-border-light: rgba(255, 255, 255, 0.15);
   --glass-border-dark: rgba(255, 255, 255, 0.08);
   --glass-shadow-light: 0 8px 32px rgba(0, 0, 0, 0.15);
   --glass-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
   --glass-highlight: rgba(255, 255, 255, 0.15);
-  --glow: rgba(242, 196, 196, 0.2);
+  --glow: rgba(141, 193, 215, 0.2);
+}
+
+/* Forest Theme - 蓝色天空主题 */
+[data-theme="forest"] {
+  --background: transparent;
+  --foreground: #1a1a1a;
+  --card: rgba(255, 255, 255, 0.65);
+  --card-foreground: #1a1a1a;
+  --popover: rgba(255, 255, 255, 0.75);
+  --popover-foreground: #1a1a1a;
+  --primary: rgb(72, 120, 234);
+  --primary-foreground: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.5);
+  --secondary-foreground: #1a1a1a;
+  --muted: rgba(255, 255, 255, 0.4);
+  --muted-foreground: #6b7280;
+  --accent: rgba(255, 255, 255, 0.5);
+  --accent-foreground: rgb(92, 130, 234);
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.3);
+  --input: rgba(255, 255, 255, 0.3);
+  --ring: rgb(72, 120, 234);
+
+  --glass-bg-light: rgba(245, 248, 255, 0.65);
+  --glass-bg-dark: rgba(240, 245, 255, 0.7);
+  --glass-border-light: rgba(220, 230, 255, 0.4);
+  --glass-border-dark: rgba(210, 225, 255, 0.3);
+  --glass-shadow-light: 0 8px 32px rgba(72, 120, 234, 0.08);
+  --glass-shadow-dark: 0 8px 32px rgba(72, 120, 234, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.8);
+  --glow: rgba(72, 120, 234, 0.2);
 }
 
 @theme inline {
@@ -123,7 +155,41 @@
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    position: relative;
   }
+
+  /* Dark mode overlay */
+  .dark body,
+  [data-theme="dark"] body {
+    background-image: url('/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: transparent;
+  }
+
+  .dark body::before,
+  [data-theme="dark"] body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 15, 0.65) 0%, rgba(10, 10, 15, 0.75) 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Forest theme background */
+  [data-theme="forest"] body {
+    background-image: url('/bg2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: transparent;
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -142,10 +208,16 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark .glass {
+[data-theme="dark"] .glass {
   background: var(--glass-bg-dark);
   border-color: var(--glass-border-dark);
   box-shadow: var(--glass-shadow-dark);
+}
+
+[data-theme="forest"] .glass {
+  background: var(--glass-bg-light);
+  border-color: var(--glass-border-light);
+  box-shadow: var(--glass-shadow-light);
 }
 
 /* Glass card */
@@ -165,14 +237,24 @@
   transform: translateY(-2px);
 }
 
-.dark .glass-card {
+[data-theme="dark"] .glass-card {
   background: var(--glass-bg-dark);
   border-color: var(--glass-border-dark);
   box-shadow: var(--glass-shadow-dark);
 }
 
-.dark .glass-card:hover {
+[data-theme="dark"] .glass-card:hover {
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="forest"] .glass-card {
+  background: var(--glass-bg-light);
+  border-color: var(--glass-border-light);
+  box-shadow: var(--glass-shadow-light);
+}
+
+[data-theme="forest"] .glass-card:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
 }
 
 /* Static glass (nav, dropdowns, panels) */
@@ -185,10 +267,16 @@
   box-shadow: var(--glass-shadow-light);
 }
 
-.dark .glass-static {
+[data-theme="dark"] .glass-static {
   background: var(--glass-bg-dark);
   border-color: var(--glass-border-dark);
   box-shadow: var(--glass-shadow-dark);
+}
+
+[data-theme="forest"] .glass-static {
+  background: var(--glass-bg-light);
+  border-color: var(--glass-border-light);
+  box-shadow: var(--glass-shadow-light);
 }
 
 /* Glass panel (larger containers) */
@@ -201,10 +289,16 @@
   box-shadow: var(--glass-shadow-light);
 }
 
-.dark .glass-panel {
+[data-theme="dark"] .glass-panel {
   background: var(--glass-bg-dark);
   border-color: var(--glass-border-dark);
   box-shadow: var(--glass-shadow-dark);
+}
+
+[data-theme="forest"] .glass-panel {
+  background: var(--glass-bg-light);
+  border-color: var(--glass-border-light);
+  box-shadow: var(--glass-shadow-light);
 }
 
 /* Glass input */
@@ -216,9 +310,14 @@
   border: 1px solid var(--glass-border-light);
 }
 
-.dark .glass-input {
-  background: rgba(255, 255, 255, 0.05);
+[data-theme="dark"] .glass-input {
+  background: rgba(29, 31, 33, 0.6);
   border-color: var(--glass-border-dark);
+}
+
+[data-theme="forest"] .glass-input {
+  background: rgba(245, 248, 255, 0.6);
+  border-color: var(--glass-border-light);
 }
 
 /* Glass button */
@@ -236,13 +335,22 @@
   transform: translateY(-1px);
 }
 
-.dark .glass-button {
-  background: rgba(255, 255, 255, 0.08);
+[data-theme="dark"] .glass-button {
+  background: rgba(29, 31, 33, 0.7);
   border-color: var(--glass-border-dark);
 }
 
-.dark .glass-button:hover {
-  background: rgba(255, 255, 255, 0.12);
+[data-theme="dark"] .glass-button:hover {
+  background: rgba(29, 31, 33, 0.85);
+}
+
+[data-theme="forest"] .glass-button {
+  background: rgba(245, 248, 255, 0.6);
+  border-color: var(--glass-border-light);
+}
+
+[data-theme="forest"] .glass-button:hover {
+  background: rgba(235, 243, 255, 0.75);
 }
 
 /* Glow accent */
@@ -259,8 +367,28 @@
   font-size: 0.625rem;
   font-weight: 600;
   border-radius: 9999px;
-  background: linear-gradient(135deg, var(--primary), rgb(180, 110, 110));
+  background: linear-gradient(135deg, var(--primary), rgb(101, 153, 175));
   color: white;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 8px rgba(200, 130, 130, 0.3);
+  box-shadow: 0 2px 8px rgba(121, 173, 195, 0.3);
+}
+
+/* Forest theme - 左侧导航栏未选中文字亮白色 */
+[data-theme="forest"] aside nav .text-muted-foreground {
+  color: #ffffff !important;
+}
+
+[data-theme="forest"] aside nav .text-muted-foreground:hover {
+  color: #ffffff !important;
+}
+
+/* Forest theme - 退出登录按钮亮白色 */
+[data-theme="forest"] aside button.mt-auto .text-muted-foreground,
+[data-theme="forest"] aside button.mt-auto span {
+  color: #ffffff !important;
+}
+
+[data-theme="forest"] aside button.mt-auto:hover .text-muted-foreground,
+[data-theme="forest"] aside button.mt-auto:hover span {
+  color: #ffffff !important;
 }

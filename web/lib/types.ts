@@ -1,3 +1,6 @@
+export type UserRole = 'user' | 'admin'
+export type UserStatus = 'active' | 'suspended' | 'banned'
+
 export interface User {
   id: string
   name: string
@@ -10,6 +13,11 @@ export interface User {
   following: string[]
   verified: boolean
   coverImage: string
+  role: UserRole
+  status: UserStatus
+  canPost: boolean
+  canComment: boolean
+  canSendMessage: boolean
 }
 
 export interface Post {
