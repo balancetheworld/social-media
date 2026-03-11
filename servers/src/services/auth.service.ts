@@ -90,6 +90,11 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
     return { success: false, error: '用户名或密码错误' }
   }
 
+  // 检查账号状态 - 只有封号用户无法登录
+  if (user.status === 'banned') {
+    return { success: false, error: '您的账号已被封号，无法登录' }
+  }
+
   // 创建会话
   const token = generateToken()
   const expiresAt = getSessionExpiry()

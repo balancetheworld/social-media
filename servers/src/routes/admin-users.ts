@@ -127,10 +127,17 @@ router.get('/:id', requireAdmin, async (ctx) => {
 
 /**
  * PUT /api/admin/users/:id/status
- * 修改用户状态（管理员专用）
+ * 修改用户状态（管理员专用，仅限admin1）
  * body: { status: 'suspended' | 'banned' | 'active' }
  */
 router.put('/:id/status', requireAdmin, async (ctx) => {
+  // 检查是否是 admin1 账号
+  if (ctx.state.user.handle !== 'admin1') {
+    ctx.status = 403
+    ctx.body = { error: '此操作仅限 admin1 账号使用' }
+    return
+  }
+
   const userId = Number(ctx.params.id)
   const { status } = ctx.request.body as any
 
@@ -165,10 +172,17 @@ router.put('/:id/status', requireAdmin, async (ctx) => {
 
 /**
  * PUT /api/admin/users/:id/permissions
- * 修改用户权限（管理员专用）
+ * 修改用户权限（管理员专用，仅限admin1）
  * body: { can_post, can_comment, can_send_message }
  */
 router.put('/:id/permissions', requireAdmin, async (ctx) => {
+  // 检查是否是 admin1 账号
+  if (ctx.state.user.handle !== 'admin1') {
+    ctx.status = 403
+    ctx.body = { error: '此操作仅限 admin1 账号使用' }
+    return
+  }
+
   const userId = Number(ctx.params.id)
   const { can_post, can_comment, can_send_message } = ctx.request.body as any
 
@@ -180,18 +194,41 @@ router.put('/:id/permissions', requireAdmin, async (ctx) => {
       return
     }
 
-    // 更新用户权限
+    // 构建动态更新SQL，只更新明确指定的字段
+    const updates: string[] = []
+    const values: any[] = []
+
+    if (can_post !== undefined) {
+      updates.push('can_post = ?')
+      values.push(can_post ? 1 : 0)
+    }
+    if (can_comment !== undefined) {
+      updates.push('can_comment = ?')
+      values.push(can_comment ? 1 : 0)
+    }
+    if (can_send_message !== undefined) {
+      updates.push('can_send_message = ?')
+      values.push(can_send_message ? 1 : 0)
+    }
+
+    if (updates.length === 0) {
+      ctx.status = 400
+      ctx.body = { error: '没有指定要更新的权限' }
+      return
+    }
+
+    values.push(userId)
     await execute(
-      'UPDATE users SET can_post = ?, can_comment = ?, can_send_message = ? WHERE id = ?',
-      [can_post ? 1 : 0, can_comment ? 1 : 0, can_send_message ? 1 : 0, userId]
+      `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+      values
     )
 
     ctx.body = {
       success: true,
       permissions: {
-        canPost: !!can_post,
-        canComment: !!can_comment,
-        canSendMessage: !!can_send_message,
+        canPost: can_post !== undefined ? !!can_post : user.can_post,
+        canComment: can_comment !== undefined ? !!can_comment : user.can_comment,
+        canSendMessage: can_send_message !== undefined ? !!can_send_message : user.can_send_message,
       },
     }
   } catch (error: any) {

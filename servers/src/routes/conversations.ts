@@ -50,7 +50,7 @@ router.post('/', requireAuth, async (ctx) => {
   const { userId } = ctx.request.body as any
 
   // 检查用户权限
-  if (!user.can_send_message) {
+  if (!user.canSendMessage) {
     ctx.status = 403
     ctx.body = { error: '您已被禁止发送私信' }
     return
@@ -102,7 +102,7 @@ router.post('/:id/messages', requireAuth, async (ctx) => {
   const { content } = ctx.request.body as any
 
   // 检查用户权限
-  if (!user.can_send_message) {
+  if (!user.canSendMessage) {
     ctx.status = 403
     ctx.body = { error: '您已被禁止发送私信' }
     return

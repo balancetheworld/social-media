@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Shield, Ban, MessageSquare, Edit3 } from "lucide-react"
+import { Search, Shield, Ban, MessageSquare, Edit3, Lock, Unlock } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useSocial } from "@/lib/social-context"
 import { UserActionsDialog } from "./UserActionsDialog"
 
 interface AdminUser {
@@ -21,24 +22,38 @@ interface AdminUser {
 
 export function AdminUsersList() {
   const t = useTranslations()
+  const { currentUser } = useSocial()
   const [users, setUsers] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
+  // 检查是否是 admin1 账号
+  const isAdmin1 = currentUser?.username === 'admin1'
+
   const loadUsers = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users`, {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/users`
+      console.log('正在加载用户，API URL:', apiUrl)
+      const res = await fetch(apiUrl, {
         credentials: "include",
       })
+      console.log('API 响应状态:', res.status, res.statusText)
+
       if (res.ok) {
         const data = await res.json()
+        console.log('获取到的用户数据:', data)
         setUsers(data.users || [])
+      } else {
+        const errorData = await res.json()
+        console.error('API 错误响应:', errorData)
+        alert(`加载用户失败: ${errorData.error || res.statusText}`)
       }
     } catch (error) {
-      console.error("Failed to load users:", error)
+      console.error('加载用户异常:', error)
+      alert(`加载用户失败: ${error}`)
     } finally {
       setLoading(false)
     }
@@ -52,6 +67,41 @@ export function AdminUsersList() {
     loadUsers()
     setDialogOpen(false)
     setSelectedUser(null)
+  }
+
+  const handlePermissionToggle = async (userId: string, permission: 'canPost' | 'canComment' | 'canSendMessage', currentValue: boolean) => {
+    try {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/users/${userId}/permissions`
+      const newValue = !currentValue
+
+      console.log(`正在修改权限: 用户ID=${userId}, 权限=${permission}, 新值=${newValue}`)
+
+      const res = await fetch(apiUrl, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          can_post: permission === 'canPost' ? newValue : undefined,
+          can_comment: permission === 'canComment' ? newValue : undefined,
+          can_send_message: permission === 'canSendMessage' ? newValue : undefined,
+        }),
+      })
+
+      console.log(`权限修改响应: status=${res.status}, ok=${res.ok}`)
+
+      if (res.ok) {
+        const data = await res.json()
+        console.log('权限修改成功:', data)
+        loadUsers()
+      } else {
+        const errorData = await res.json()
+        console.error('权限修改失败:', errorData)
+        alert(`操作失败: ${errorData.error || res.statusText}`)
+      }
+    } catch (error) {
+      console.error('权限修改异常:', error)
+      alert(`操作失败: ${error}`)
+    }
   }
 
   const openUserDialog = (user: AdminUser) => {
@@ -179,12 +229,42 @@ export function AdminUsersList() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => openUserDialog(user)}
-                        className="px-3 py-1.5 text-sm rounded-lg border border-border hover:bg-muted transition-colors"
-                      >
-                        管理
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        {isAdmin1 && (
+                          <>
+                            <button
+                              onClick={() => handlePermissionToggle(user.id, 'canPost', user.canPost)}
+                              className={`px-2 py-1 text-xs rounded-lg border transition-colors flex items-center gap-1 ${
+                                user.canPost
+                                  ? 'bg-green-500/10 text-green-600 border-green-500/20 hover:bg-green-500/20'
+                                  : 'bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20'
+                              }`}
+                              title={user.canPost ? "禁止发帖" : "允许发帖"}
+                            >
+                              {user.canPost ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+                              发帖
+                            </button>
+                            <button
+                              onClick={() => handlePermissionToggle(user.id, 'canSendMessage', user.canSendMessage)}
+                              className={`px-2 py-1 text-xs rounded-lg border transition-colors flex items-center gap-1 ${
+                                user.canSendMessage
+                                  ? 'bg-green-500/10 text-green-600 border-green-500/20 hover:bg-green-500/20'
+                                  : 'bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20'
+                              }`}
+                              title={user.canSendMessage ? "禁止私信" : "允许私信"}
+                            >
+                              {user.canSendMessage ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+                              私信
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => openUserDialog(user)}
+                          className="px-3 py-1.5 text-sm rounded-lg border border-border hover:bg-muted transition-colors"
+                        >
+                          管理
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
