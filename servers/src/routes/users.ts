@@ -48,6 +48,13 @@ router.post('/:id/follow', requireAuth, async (ctx) => {
   const targetId = Number(ctx.params.id)
   const currentId = Number(user.id)
 
+  // 检查账号状态 - 只有封号用户无法关注
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封号，无法进行此操作' }
+    return
+  }
+
   // 不能关注自己
   if (targetId === currentId) {
     ctx.status = 400

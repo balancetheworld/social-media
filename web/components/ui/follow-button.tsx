@@ -5,7 +5,7 @@ import { useSocial } from "@/lib/social-context"
 import { useLoginPrompt } from "@/components/ui/login-prompt"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
-import { UserCheck, UserPlus, Users } from "lucide-react"
+import { UserCheck, UserPlus } from "lucide-react"
 
 interface FollowButtonProps {
   userId: string
@@ -22,8 +22,6 @@ export function FollowButton({ userId, size = "sm", className }: FollowButtonPro
   if (userId === currentUserId) return null
 
   const isFollowing = currentUser?.following.includes(userId) ?? false
-  const isFollowedBy = currentUser?.followers?.includes(userId) ?? false
-  const isMutual = isFollowing && isFollowedBy
 
   const handleClick = () => {
     if (!isLoggedIn) {
@@ -31,25 +29,6 @@ export function FollowButton({ userId, size = "sm", className }: FollowButtonPro
       return
     }
     toggleFollow(userId)
-  }
-
-  if (isMutual) {
-    return (
-      <Button
-        size={size}
-        variant="outline"
-        className={cn(
-          "rounded-full border-primary/20 text-primary hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 group transition-all",
-          size === "sm" ? "h-7 px-2.5 text-xs gap-1" : "h-8 px-3 text-xs gap-1.5",
-          className
-        )}
-        onClick={handleClick}
-      >
-        <Users className={cn("shrink-0", size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")} />
-        <span className="group-hover:hidden">{t("followBack")}</span>
-        <span className="hidden group-hover:inline">{tCommon("cancel")}</span>
-      </Button>
-    )
   }
 
   if (isFollowing) {
@@ -67,23 +46,6 @@ export function FollowButton({ userId, size = "sm", className }: FollowButtonPro
         <UserCheck className={cn("shrink-0", size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")} />
         <span className="group-hover:hidden">{t("following")}</span>
         <span className="hidden group-hover:inline">{tCommon("cancel")}</span>
-      </Button>
-    )
-  }
-
-  if (isFollowedBy) {
-    return (
-      <Button
-        size={size}
-        className={cn(
-          "rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all",
-          size === "sm" ? "h-7 px-2.5 text-xs gap-1" : "h-8 px-3 text-xs gap-1.5",
-          className
-        )}
-        onClick={handleClick}
-      >
-        <UserPlus className={cn("shrink-0", size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")} />
-        {t("followBack")}
       </Button>
     )
   }

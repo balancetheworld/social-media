@@ -32,20 +32,29 @@ export function UserActionsDialog({ user, open, onClose, onUpdate }: UserActions
 
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/status`, {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/users/${user.id}/status`
+      console.log(`正在修改状态: 用户ID=${user.id}, 状态=${status}, API URL=${apiUrl}`)
+      const res = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ status }),
       })
 
+      console.log(`状态修改响应: status=${res.status}, ok=${res.ok}`)
+
       if (res.ok) {
+        const data = await res.json()
+        console.log('状态修改成功:', data)
         onUpdate()
       } else {
-        alert("操作失败")
+        const errorData = await res.json()
+        console.error('状态修改失败:', errorData)
+        alert(`操作失败: ${errorData.error || res.statusText}`)
       }
     } catch (error) {
-      alert("操作失败")
+      console.error('状态修改异常:', error)
+      alert(`操作失败: ${error}`)
     } finally {
       setLoading(false)
     }
@@ -54,7 +63,9 @@ export function UserActionsDialog({ user, open, onClose, onUpdate }: UserActions
   const handlePermissionChange = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/permissions`, {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/users/${user.id}/permissions`
+      console.log(`正在修改权限: 用户ID=${user.id}, canPost=${user.canPost}, canComment=${user.canComment}, canSendMessage=${user.canSendMessage}, API URL=${apiUrl}`)
+      const res = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -65,13 +76,20 @@ export function UserActionsDialog({ user, open, onClose, onUpdate }: UserActions
         }),
       })
 
+      console.log(`权限修改响应: status=${res.status}, ok=${res.ok}`)
+
       if (res.ok) {
+        const data = await res.json()
+        console.log('权限修改成功:', data)
         onUpdate()
       } else {
-        alert("操作失败")
+        const errorData = await res.json()
+        console.error('权限修改失败:', errorData)
+        alert(`操作失败: ${errorData.error || res.statusText}`)
       }
     } catch (error) {
-      alert("操作失败")
+      console.error('权限修改异常:', error)
+      alert(`操作失败: ${error}`)
     } finally {
       setLoading(false)
     }
