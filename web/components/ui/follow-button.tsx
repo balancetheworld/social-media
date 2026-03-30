@@ -7,11 +7,7 @@ import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { UserCheck, UserPlus, Users } from "lucide-react"
 
-interface FollowButtonProps {
-  userId: string
-  size?: "sm" | "default"
-  className?: string
-}
+import type { FollowButtonProps } from "@/types/components"
 
 export function FollowButton({ userId, size = "sm", className }: FollowButtonProps) {
   const t = useTranslations("profile")

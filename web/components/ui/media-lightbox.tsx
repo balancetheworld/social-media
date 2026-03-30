@@ -3,18 +3,10 @@
 import { useState, useCallback, useEffect } from "react"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 
-interface MediaItem {
-  type: "image" | "video"
-  url: string
-}
-
-interface MediaLightboxProps {
-  media: MediaItem[]
-  initialIndex: number
-  onClose: () => void
-}
+import type { MediaLightboxProps } from "@/types/components"
 
 export function MediaLightbox({ media, initialIndex, onClose }: MediaLightboxProps) {
+  type MediaType = MediaLightboxProps["media"][number]
   const [index, setIndex] = useState(initialIndex)
   const current = media[index]
 

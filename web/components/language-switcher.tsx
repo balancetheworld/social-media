@@ -30,9 +30,7 @@ const LANGUAGES = [
   { code: "ja", name: "日本語", flag: "🇯🇵" }
 ] as const
 
-interface LanguageSwitcherProps {
-  showLabel?: boolean
-}
+import type { LanguageSwitcherProps } from "@/types/components"
 
 // 导出语言切换器组件（函数式组件）
 export function LanguageSwitcher({ showLabel = false }: LanguageSwitcherProps) {

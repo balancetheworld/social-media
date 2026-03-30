@@ -1,13 +1,9 @@
 "use client"
 
-import { Home, Hash, Bell, Mail, User } from "lucide-react"
+import { Home, Hash, Bell, Mail, User, Search } from "lucide-react"
 import { usePathname } from "next/navigation"
 
-interface PageHeaderProps {
-  title: string
-  icon?: "home" | "hash" | "bell" | "mail" | "user" | "bookmark"
-  showBackButton?: boolean
-}
+import type { PageHeaderProps } from "@/types/components"
 
 export function PageHeader({ title, icon = "home", showBackButton = false }: PageHeaderProps) {
   const pathname = usePathname()
@@ -19,6 +15,7 @@ export function PageHeader({ title, icon = "home", showBackButton = false }: Pag
     mail: Mail,
     user: User,
     bookmark: Hash,
+    search: Search,
   }[icon]
 
   return (

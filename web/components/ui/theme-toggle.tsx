@@ -11,9 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-interface ThemeToggleProps {
-  showLabel?: boolean
-}
+import type { ThemeToggleProps } from "@/types/components"
 
 export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme()

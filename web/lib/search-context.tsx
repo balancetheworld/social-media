@@ -3,13 +3,7 @@
 import { createContext, useContext, useState, useMemo } from "react"
 import { useSocial } from "./social-context"
 import type { Post } from "./types"
-
-interface SearchContextType {
-  query: string
-  setQuery: (q: string) => void
-  postResults: Post[]
-  isSearching: boolean
-}
+import type { SearchContextType } from "@/types/context"
 
 const SearchContext = createContext<SearchContextType | null>(null)
 

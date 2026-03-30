@@ -7,6 +7,8 @@ import { api } from "@/lib/api-client"
 import { formatDistanceToNow } from "date-fns"
 import { zhCN } from "date-fns/locale"
 
+import type { Author } from "@/types/entities"
+
 interface Post {
   id: string
   authorId: string
@@ -14,13 +16,6 @@ interface Post {
   createdAt: string
   likes: string[]
   comments: any[]
-}
-
-interface Author {
-  id: string
-  name: string
-  handle: string
-  avatar: string
 }
 
 export function AdminPostsList() {
@@ -41,16 +36,15 @@ export function AdminPostsList() {
         const data = await res.json()
         setPosts(data.posts || [])
 
-        // 加载作者信息
-        const userIds = Array.from(new Set(data.posts.map((p: Post) => p.authorId)))
+        const userIds = Array.from(new Set(data.posts.map((p: Post) => p.authorId))) as string[]
         const usersRes = await api.getUsers()
         const usersMap: Record<string, Author> = {}
-        userIds.forEach((id: string) => {
-          const user = usersRes.users.find((u: Author) => u.id === id)
+        for (const id of userIds) {
+          const user = (usersRes.users as Author[]).find((u: Author) => u.id === id)
           if (user) {
             usersMap[id] = user
           }
-        })
+        }
         setAuthors(usersMap)
       }
     } catch (error) {

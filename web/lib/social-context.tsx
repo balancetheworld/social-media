@@ -2,37 +2,8 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
 import type { User, Post, Conversation, Notification } from "./types"
+import type { SocialContextType } from "@/types/context"
 import { api } from "./api-client"
-
-interface SocialContextType {
-  currentUserId: string | null
-  currentUser: User | null
-  isLoggedIn: boolean
-  isLoading: boolean
-  users: User[]
-  posts: Post[]
-  conversations: Conversation[]
-  notifications: Notification[]
-  getUser: (id: string) => User | undefined
-  createPost: (content: string, tags?: string[], media?: { type: string; url: string }[]) => Promise<void>
-  toggleLike: (postId: string) => Promise<void>
-  toggleCommentLike: (postId: string, commentId: string) => Promise<void>
-  addComment: (postId: string, content: string) => Promise<void>
-  toggleFollow: (targetUserId: string) => Promise<void>
-  sendMessage: (conversationId: string, content: string) => Promise<void>
-  markNotificationsRead: () => Promise<void>
-  markConversationRead: (conversationId: string) => void
-  unreadNotificationCount: number
-  unreadMessageCount: number
-  login: (username: string, password: string) => Promise<void>
-  register: (username: string, password: string, displayName: string) => Promise<void>
-  logout: () => Promise<void>
-  refreshData: () => Promise<void>
-  deletePost: (postId: string) => Promise<void>
-  showComposeDialog: boolean
-  openComposeDialog: () => void
-  closeComposeDialog: () => void
-}
 
 const SocialContext = createContext<SocialContextType | null>(null)
 
@@ -48,7 +19,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
   const currentUserId = currentUser?.id ?? null
   const isLoggedIn = !!currentUser
 
-  // Load all data
   const refreshData = useCallback(async () => {
     try {
       const [usersRes, postsRes, meRes] = await Promise.all([
@@ -61,7 +31,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
 
       if (meRes.user) {
         setCurrentUser(meRes.user)
-        // Load authenticated data
         const [convsRes, notifsRes] = await Promise.all([
           api.getConversations(),
           api.getNotifications(),
@@ -74,7 +43,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
         setNotifs([])
       }
     } catch {
-      // silent fail on load
     } finally {
       setIsLoading(false)
     }
@@ -100,7 +68,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
   const register = useCallback(
     async (username: string, password: string, displayName: string) => {
       const res = await api.register(username, password, displayName)
-      // Set user immediately from the response, then refresh all data in background
       if (res.user) {
         setCurrentUser(res.user)
         setUsers((prev) => [...prev, res.user])
@@ -122,7 +89,7 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
     setPosts((prev) => [post, ...prev])
   }, [])
 
- const deletePost = useCallback(async (postId: string) => {
+  const deletePost = useCallback(async (postId: string) => {
     setPosts((prev) => prev.filter((post) => post.id !== postId))
     try {
       await api.deletePost(postId)
@@ -135,7 +102,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
   const toggleLike = useCallback(
     async (postId: string) => {
       if (!currentUserId) return
-      // Optimistic update
       setPosts((prev) =>
         prev.map((post) => {
           if (post.id !== postId) return post
@@ -151,7 +117,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
       try {
         await api.toggleLike(postId)
       } catch {
-        // Revert on failure
         setPosts((prev) =>
           prev.map((post) => {
             if (post.id !== postId) return post
@@ -193,7 +158,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
       try {
         await api.toggleCommentLike(commentId)
       } catch {
-        // silently fail, data will be correct on next refresh
       }
     },
     [currentUserId]
@@ -216,7 +180,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
   const toggleFollow = useCallback(
     async (targetUserId: string) => {
       if (!currentUserId) return
-      // Optimistic update
       setUsers((prev) =>
         prev.map((user) => {
           if (user.id === currentUserId) {
@@ -240,7 +203,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
           return user
         })
       )
-      // Also update currentUser
       setCurrentUser((prev) => {
         if (!prev) return prev
         const isFollowing = prev.following.includes(targetUserId)
@@ -254,7 +216,6 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
       try {
         await api.toggleFollow(targetUserId)
       } catch {
-        // Revert on next refresh
       }
     },
     [currentUserId]
@@ -283,11 +244,9 @@ export function SocialProvider({ children }: { children: React.ReactNode }) {
     try {
       await api.markNotificationsRead()
     } catch {
-      // silently fail
     }
   }, [])
 
-  // 标记对话消息为已读（前端状态更新）
   const markConversationRead = useCallback((conversationId: string) => {
     setConversations((prev) =>
       prev.map((conv) =>

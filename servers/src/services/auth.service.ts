@@ -204,8 +204,10 @@ export async function getUserToken(userId: number): Promise<string | null> {
 export const SESSION_COOKIE = 'session_token'
 export const COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
   path: '/',
   maxAge: SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000,
   overwrite: true,
+  signed: true,
 }

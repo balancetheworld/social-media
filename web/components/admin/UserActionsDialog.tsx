@@ -4,24 +4,8 @@ import { useState } from "react"
 import { X, Shield, Ban, Check, AlertTriangle } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-interface AdminUser {
-  id: string
-  username: string
-  displayName: string
-  avatar: string
-  role: string
-  status: string
-  canPost: boolean
-  canComment: boolean
-  canSendMessage: boolean
-}
-
-interface UserActionsDialogProps {
-  user: AdminUser
-  open: boolean
-  onClose: () => void
-  onUpdate: () => void
-}
+import type { AdminUser } from "@/types/entities"
+import type { UserActionsDialogProps } from "@/types/components"
 
 export function UserActionsDialog({ user, open, onClose, onUpdate }: UserActionsDialogProps) {
   const t = useTranslations()

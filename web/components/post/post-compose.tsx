@@ -9,17 +9,8 @@ import { Hash, X, ImagePlus, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 
-interface MediaItem {
-  type: "image" | "video"
-  url: string
-  file?: File
-  preview?: string
-}
-
-interface PostComposeProps {
-  onSuccess?: () => void
-  inDialog?: boolean
-}
+import type { MediaItem } from "@/types/entities"
+import type { PostComposeProps } from "@/types/components"
 
 export function PostCompose({ onSuccess, inDialog = false }: PostComposeProps) {
   const t = useTranslations("post")

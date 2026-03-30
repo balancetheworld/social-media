@@ -28,6 +28,8 @@ if (!fs.existsSync(uploadsDir)) {
 const app = new Koa()
 const PORT = Number(process.env.PORT) || 4000
 
+app.keys = process.env.APP_KEYS?.split(',') || ['default-session-key-change-in-production']
+
 // CORS -- allow the Next.js frontend
 app.use(cors({
   origin: process.env.WEB_ORIGIN || "http://localhost:3000",

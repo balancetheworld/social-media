@@ -65,7 +65,7 @@ router.post('/register', async (ctx) => {
  * 用户登出
  */
 router.post('/logout', async (ctx) => {
-  const token = ctx.cookies.get(SESSION_COOKIE)
+  const token = ctx.cookies.get(SESSION_COOKIE, { signed: true })
   if (token) {
     await AuthService.logout(token)
   }
@@ -78,7 +78,7 @@ router.post('/logout', async (ctx) => {
  * 获取当前登录用户信息
  */
 router.get('/me', async (ctx) => {
-  const token = ctx.cookies.get(SESSION_COOKIE)
+  const token = ctx.cookies.get(SESSION_COOKIE, { signed: true })
   if (!token) {
     ctx.body = { user: null }
     return

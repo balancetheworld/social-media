@@ -7,12 +7,7 @@ import { FollowButton } from "@/components/ui/follow-button"
 import { useSocial } from "@/lib/social-context"
 import { useTranslations } from "next-intl"
 
-interface FollowListDialogProps {
-  userIds: string[]
-  title: string
-  open: boolean
-  onClose: () => void
-}
+import type { FollowListDialogProps } from "@/types/components"
 
 export function FollowListDialog({ userIds, title, open, onClose }: FollowListDialogProps) {
   const t = useTranslations("followList")

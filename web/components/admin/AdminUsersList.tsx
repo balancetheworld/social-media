@@ -5,19 +5,7 @@ import { Search, Shield, Ban, MessageSquare, Edit3 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { UserActionsDialog } from "./UserActionsDialog"
 
-interface AdminUser {
-  id: string
-  username: string
-  displayName: string
-  avatar: string
-  bio: string
-  role: string
-  status: string
-  canPost: boolean
-  canComment: boolean
-  canSendMessage: boolean
-  createdAt: string
-}
+import type { AdminUser } from "@/types/entities"
 
 export function AdminUsersList() {
   const t = useTranslations()

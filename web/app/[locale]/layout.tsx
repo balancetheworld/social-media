@@ -30,6 +30,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: '微言 - 社交平台',
   description: '分享你的想法，连接志同道合的人',
+  icons: {
+    icon: '/logo.png',
+  },
 }
 
 export const viewport: Viewport = {

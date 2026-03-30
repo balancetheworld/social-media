@@ -11,7 +11,7 @@ import * as AuthService from '../services/auth.service.js'
  * 如果存在有效的 session cookie，将用户信息添加到 ctx.state.user
  */
 export async function authMiddleware(ctx: Context, next: Next) {
-  const token = ctx.cookies.get(AuthService.SESSION_COOKIE)
+  const token = ctx.cookies.get(AuthService.SESSION_COOKIE, { signed: true })
   if (token) {
     const user = await AuthService.getUserByToken(token)
     if (user) {

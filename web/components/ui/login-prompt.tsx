@@ -6,9 +6,9 @@ import { LogIn, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTranslations } from "next-intl"
 
-interface LoginPromptContextType {
-  showPrompt: (message?: string) => void
-}
+import type { LoginPromptContextType } from "@/types/context"
+
+// LoginPromptContextType is now imported from @/types/context
 
 const LoginPromptContext = createContext<LoginPromptContextType>({ showPrompt: () => {} })
 
