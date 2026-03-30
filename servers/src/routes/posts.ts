@@ -28,7 +28,7 @@ router.post('/', requireAuth, async (ctx) => {
   const { content, tags, media } = ctx.request.body as any
 
   // 检查用户权限
-  if (!user.can_post) {
+  if (!user.canPost) {
     ctx.status = 403
     ctx.body = { error: '您已被禁止发帖' }
     return
@@ -68,6 +68,13 @@ router.post('/:id/like', requireAuth, async (ctx) => {
   const user = ctx.state.user
   const postId = Number(ctx.params.id)
 
+  // 检查账号状态 - 只有封号用户无法点赞
+  if (user.status === 'banned') {
+    ctx.status = 403
+    ctx.body = { error: '您的账号已被封号，无法进行此操作' }
+    return
+  }
+
   try {
     const result = await PostService.togglePostLike(postId, Number(user.id))
     ctx.body = result
@@ -87,7 +94,7 @@ router.post('/:id/comments', requireAuth, async (ctx) => {
   const { content } = ctx.request.body as any
 
   // 检查用户权限
-  if (!user.can_comment) {
+  if (!user.canComment) {
     ctx.status = 403
     ctx.body = { error: '您已被禁止评论' }
     return

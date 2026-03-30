@@ -29,6 +29,24 @@ export function PostCompose({ onSuccess, inDialog = false }: PostComposeProps) {
 
   const handleSubmit = async () => {
     if (!content.trim() && mediaItems.length === 0) return
+
+    // 检查账号状态
+    if (currentUser.status === "banned") {
+      alert("您的账号已被封号，无法进行此操作")
+      return
+    }
+
+    if (currentUser.status === "suspended") {
+      alert("您的账号已被禁言，无法进行此操作")
+      return
+    }
+
+    // 检查发帖权限
+    if (!currentUser.canPost) {
+      alert("您的账号已被禁止发帖，请联系管理员")
+      return
+    }
+
     setSubmitting(true)
     try {
       const uploadedMedia: { type: string; url: string }[] = []
@@ -47,6 +65,8 @@ export function PostCompose({ onSuccess, inDialog = false }: PostComposeProps) {
       setShowTagInput(false)
       setMediaItems([])
       onSuccess?.()
+    } catch (error: any) {
+      alert(error?.message || "发布失败，请稍后重试")
     } finally {
       setSubmitting(false)
     }

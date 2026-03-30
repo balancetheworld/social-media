@@ -17,8 +17,30 @@ export function CommentList({ post }: { post: Post }) {
 
   const handleSubmit = async () => {
     if (!newComment.trim()) return
-    await addComment(post.id, newComment.trim())
-    setNewComment("")
+
+    // 检查评论权限
+    if (!currentUser?.canComment) {
+      alert("您的账号已被禁止评论，请联系管理员")
+      return
+    }
+
+    // 检查账号状态
+    if (currentUser?.status === "banned") {
+      alert("您的账号已被封号，无法进行此操作")
+      return
+    }
+
+    if (currentUser?.status === "suspended") {
+      alert("您的账号已被禁言，无法进行此操作")
+      return
+    }
+
+    try {
+      await addComment(post.id, newComment.trim())
+      setNewComment("")
+    } catch (error: any) {
+      alert(error?.message || "评论失败，请稍后重试")
+    }
   }
 
   return (

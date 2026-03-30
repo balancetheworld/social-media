@@ -6,6 +6,7 @@
 
 import Router from 'koa-router'
 import * as PostService from '../services/post.service.js'
+import * as UserRepo from '../repositories/user.repository.js'
 import { requireAdmin } from '../middleware/admin.js'
 
 const router = new Router({ prefix: '/api/admin/posts' })
@@ -26,12 +27,36 @@ router.get('/', requireAdmin, async (ctx) => {
     // 获取所有帖子
     const allPosts = await PostService.getAllPosts()
 
+    // 获取所有作者信息
+    const authorIds = Array.from(new Set(allPosts.map((p) => Number(p.authorId))))
+    const usersMap = new Map()
+    await Promise.all(
+      authorIds.map(async (id) => {
+        const user = await UserRepo.findById(id)
+        if (user) {
+          usersMap.set(id, user)
+        }
+      })
+    )
+
+    // 为每个帖子添加作者信息
+    const postsWithAuthor = allPosts.map((post) => {
+      const author = usersMap.get(Number(post.authorId))
+      return {
+        ...post,
+        authorName: author?.display_name || '',
+        authorUsername: author?.username || '',
+      }
+    })
+
     // 如果有搜索关键词，进行过滤
-    let filteredPosts = allPosts
+    let filteredPosts = postsWithAuthor
     if (search) {
       const searchLower = String(search).toLowerCase()
-      filteredPosts = allPosts.filter((post: any) =>
-        post.content?.toLowerCase().includes(searchLower)
+      filteredPosts = postsWithAuthor.filter((post: any) =>
+        post.content?.toLowerCase().includes(searchLower) ||
+        post.authorName?.toLowerCase().includes(searchLower) ||
+        post.authorUsername?.toLowerCase().includes(searchLower)
       )
     }
 

@@ -29,11 +29,16 @@ export function AdminPostsList() {
   const loadPosts = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/posts`, {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/posts`
+      console.log('正在加载帖子，API URL:', apiUrl)
+      const res = await fetch(apiUrl, {
         credentials: "include",
       })
+      console.log('API 响应状态:', res.status, res.statusText)
+
       if (res.ok) {
         const data = await res.json()
+        console.log('获取到的帖子数据:', data)
         setPosts(data.posts || [])
 
         const userIds = Array.from(new Set(data.posts.map((p: Post) => p.authorId))) as string[]
@@ -46,9 +51,15 @@ export function AdminPostsList() {
           }
         }
         setAuthors(usersMap)
+        console.log('作者信息已加载:', usersMap)
+      } else {
+        const errorData = await res.json()
+        console.error('API 错误响应:', errorData)
+        alert(`加载帖子失败: ${errorData.error || res.statusText}`)
       }
     } catch (error) {
-      console.error("Failed to load posts:", error)
+      console.error('加载帖子异常:', error)
+      alert(`加载帖子失败: ${error}`)
     } finally {
       setLoading(false)
     }
@@ -63,18 +74,27 @@ export function AdminPostsList() {
 
     try {
       setDeletingIds((prev) => new Set(prev).add(postId))
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/posts/${postId}`, {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/posts/${postId}`
+      console.log(`正在删除帖子: 帖子ID=${postId}, API URL=${apiUrl}`)
+      const res = await fetch(apiUrl, {
         method: "DELETE",
         credentials: "include",
       })
 
+      console.log(`删除响应: status=${res.status}, ok=${res.ok}`)
+
       if (res.ok) {
+        const data = await res.json()
+        console.log('删除成功:', data)
         setPosts((prev) => prev.filter((p) => p.id !== postId))
       } else {
-        alert(t("admin.deleteFailed"))
+        const errorData = await res.json()
+        console.error('删除失败:', errorData)
+        alert(`删除失败: ${errorData.error || res.statusText}`)
       }
     } catch (error) {
-      alert(t("admin.deleteFailed"))
+      console.error('删除异常:', error)
+      alert(`删除失败: ${error}`)
     } finally {
       setDeletingIds((prev) => {
         const next = new Set(prev)

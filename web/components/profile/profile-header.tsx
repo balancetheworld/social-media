@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { MapPin, Calendar, Users } from "lucide-react"
+import { MapPin, Calendar } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useSocial } from "@/lib/social-context"
@@ -17,10 +17,6 @@ export function ProfileHeader({ user }: { user: User }) {
   const { currentUserId, isLoggedIn, currentUser } = useSocial()
   const isOwnProfile = isLoggedIn && user.id === currentUserId
   const [listType, setListType] = useState<"following" | "followers" | null>(null)
-
-  const isMutual = isLoggedIn && currentUser
-    ? currentUser.following.includes(user.id) && currentUser.followers.includes(user.id)
-    : false
 
   const joinDate = new Date(user.joinDate)
   const joinMonth = joinDate.toLocaleDateString(locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : "en-US", { year: "numeric", month: "long" })
@@ -41,11 +37,6 @@ export function ProfileHeader({ user }: { user: User }) {
           </Avatar>
 
           <div className="mb-2 flex items-center gap-2">
-            {!isOwnProfile && isMutual && (
-              <span className="badge-mutual">
-                <Users className="h-2.5 w-2.5" /> {t("followBack")}
-              </span>
-            )}
             {isOwnProfile ? (
               <Button variant="outline" className="rounded-full text-xs h-8 px-4">
                 {t("editProfile")}

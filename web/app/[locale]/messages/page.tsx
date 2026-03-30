@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 export default function MessagesPage() {
   const t = useTranslations("message")
   const locale = useLocale()
-  const { conversations, currentUserId, getUser, sendMessage, markConversationRead } = useSocial()
+  const { conversations, currentUserId, getUser, sendMessage, markConversationRead, currentUser } = useSocial()
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null)
   const [newMessage, setNewMessage] = useState("")
 
@@ -40,8 +40,30 @@ export default function MessagesPage() {
 
   const handleSend = async () => {
     if (!newMessage.trim() || !selectedConvId) return
-    await sendMessage(selectedConvId, newMessage.trim())
-    setNewMessage("")
+
+    // 检查账号状态
+    if (currentUser?.status === "banned") {
+      alert("您的账号已被封号，无法进行此操作")
+      return
+    }
+
+    if (currentUser?.status === "suspended") {
+      alert("您的账号已被禁言，无法进行此操作")
+      return
+    }
+
+    // 检查私信权限
+    if (!currentUser?.canSendMessage) {
+      alert("您的账号已被禁止发送私信，请联系管理员")
+      return
+    }
+
+    try {
+      await sendMessage(selectedConvId, newMessage.trim())
+      setNewMessage("")
+    } catch (error: any) {
+      alert(error?.message || "发送失败，请稍后重试")
+    }
   }
 
   return (
@@ -160,7 +182,7 @@ export default function MessagesPage() {
                               "max-w-[70%] rounded-2xl px-4 py-2",
                               isOwn
                                 ? "bg-primary text-primary-foreground rounded-br-sm"
-                                : "bg-[#ffffff] text-foreground rounded-bl-sm border border-border/20"
+                                : "bg-[#ffffff] text-black rounded-bl-sm border border-border/20"
                             )}>
                               <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
                               <p className={cn(
